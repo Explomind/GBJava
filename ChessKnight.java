@@ -1,21 +1,15 @@
 // Шахматную доску размером NxN обойти конём так, чтобы фигура в каждой клетке была строго один раз.
 
-import java.util.ArrayList;
-import java.util.Scanner;
-
 public class ChessKnight {
-    static void printArray(Integer[] array) {
+    static void printArray(int[] array) {
         for (int i = 0; i < array.length; i++) {
             System.out.print(array[i] + " ");
         }
         System.out.println();
-        // Scanner iScanner = new Scanner(System.in);
-        // iScanner.nextLine();
-        // iScanner.close();
     }
 
-    static Integer[] NewTurn(int number, Integer[] point) {   // подбирает возможный следующий ход коня
-        Integer[] result = point;
+    static int[] newTurn(int number, int[] point) { // подбирает возможный следующий ход коня
+        int[] result = new int[2];
         switch (number) {
             case 0:
                 result[0] = point[0] + 1;
@@ -54,56 +48,51 @@ public class ChessKnight {
         }
     }
 
-    static boolean CheckTurn(ArrayList<Integer[]> route, Integer[] point, int boardSize) {   
-        System.out.println(point[0] + " " + point[1]);                                      
-        if ( point[0] >= 0 && point[0] < boardSize && point[1] >= 0 && point[1] < boardSize) {  // проверка хода на выход за пределы доски
-            System.out.println("Point is on board");
-            for (Integer[] item : route) {
-                System.out.printf("route[0]: %d route[1]: %d\n", item[0], item[1]);
-                if (item[0] != point[0] && item[1] != point[1]) {   // проверка на уникальность хода
-                    return true;
+    static boolean checkTurn(int[][] route, int[] point, int boardSize, int qTurns) {
+        if (point[0] >= 0 && point[0] < boardSize && point[1] >= 0 && point[1] < boardSize) { // проверка хода на выход
+                                                                                              // за пределы доски
+            for (int i = qTurns - 1; i >= 0; i--) {
+                if (route[i][0] == point[0] && route[i][1] == point[1]) {  // проверка хода на уникальность
+                    return false;
                 }
             }
+            return true;
         }
         return false;
     }
 
-    static int SeekRoute(ArrayList<Integer[]> route, Integer[] point, int boardSize, int qTurns) {
-        for (int i = 0; i < 8; i++) {   // 8 возможных ходов конем из центра доски
-            if (qTurns < boardSize * boardSize - 1) {  // общее кол-во ходов на 1 меньше, чем клеток на доске
-                if (CheckTurn(route, NewTurn(i, point), boardSize)) {
-                    point = NewTurn(i, point);
-                    route.add(point);
-                    for (Integer[] item : route) {   // для отладки
-                            printArray(item);
-                        }
-                    qTurns = SeekRoute(route, point, boardSize, qTurns + 1);
+    static boolean seekRoute(int[][] route, int[] point, int boardSize, int qTurns, boolean solved) {
+        for (int i = 0; i < 8; i++) { // 8 возможных ходов конем из центра доски
+            if (!solved) { 
+                int[] newPoint = newTurn(i, point);
+                if (checkTurn(route, newPoint, boardSize, qTurns)) {
+                    route[qTurns] = newPoint;
+                    if (qTurns < route.length - 1) {  // если номер текущего хода меньше длины маршрута, ищем дальше 
+                        solved = seekRoute(route, newPoint, boardSize, qTurns + 1, solved);    
+                    } else {
+                        return true;
+                    }
                 }
             } else {
-                return qTurns;
+                return true;
             }
-            
         }
-        return qTurns;
+        return solved;
     }
 
     public static void main(String[] args) {
-        int boardSize = 5;
-        Integer[] startPoint = new Integer[] { boardSize / 2, boardSize / 2 };  // стартовая позиция коня в центра доски
-        ArrayList<Integer[]> route = new ArrayList<>(boardSize * boardSize);
-        route.add(startPoint);
-        // SeekRoute(route, startPoint, boardSize, 0);
-        System.out.print("Start point: ");
-        for (Integer[] item : route) {
-            printArray(item);
+        int boardSize = 5; // размер доски (5х5)
+        int[] startPoint = new int[] { boardSize / 2, boardSize / 2 }; // стартовая позиция коня в центре доски
+        int[][] route = new int[boardSize * boardSize][2]; // маршрут коня строится в виде последовательности координат клеток
+        route[0] = startPoint;
+        if (seekRoute(route, startPoint, boardSize, 1, false)) {
+            System.out.println("Маршрут построен!");
+            for (int i = 0; i < route.length; i++) {
+                System.out.printf("Ход №" + i + ":  ");
+                printArray(route[i]);
+            }    
+        } else {
+            System.out.println("Маршрут не найден.");
         }
-        System.out.println();
-        // printArray(startPoint);
-        int i = 0;
-        // System.out.printf("NewTurn(%d, startPoint): ", i);
-        // printArray(NewTurn(i, startPoint));
-        // System.out.println(CheckTurn(route, NewTurn(0, startPoint), boardSize));
-        System.out.printf("CheckTurn(route, NewTurn(%d, startPoint), boardSize: ", i);
-        CheckTurn(route, NewTurn(i, startPoint), boardSize);
     }
 }
