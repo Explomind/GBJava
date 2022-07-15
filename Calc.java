@@ -1,19 +1,11 @@
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-// import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Calc {
     static boolean isNumber(String item) {
-        // char[] array = item.toCharArray();
-        // for (char c : array) {
-        //     if (!Character.isDigit(c)) {
-        //         return false;
-        //     }
-        // }
-        // return true;
         try {
             Double.parseDouble(item);
             return true;
@@ -65,20 +57,12 @@ public class Calc {
 
     static ArrayList<String> infixToPostfix(String expInfix, Map<String, Integer> operatorsMap) {
         expInfix = "(" + expInfix + ")";
-        System.out.println(expInfix);
         ArrayList<String> expPostfix = new ArrayList<>();
         Deque<String> operations = new ArrayDeque<>();
-        // System.out.println("operations.size = " + operations.size());
-
-        // System.out.println(operatorsMap.keySet());
-        // System.out.println(operatorsMap.values());
-        // ArrayList<String> functionsList = new ArrayList<>(Arrays.asList("Sin, Cos,
-        // Tg, Ctg".split(", ")));
         String tmp = "";
         String inSymbol = "";
         for (int i = 0; i < expInfix.length(); i++) {
             inSymbol = Character.toString(expInfix.charAt(i));
-            // System.out.println("i: " + i);
             while (i < expInfix.length() && Character.isDigit(expInfix.charAt(i))) {
                 tmp += expInfix.charAt(i);
                 i++;
@@ -106,8 +90,6 @@ public class Calc {
                 i--;
             }
             if (operatorsMap.containsKey(inSymbol)) {
-                // System.out.println("operations.size = " + operations.size());
-                // System.out.println(operations);
                 while (operations.size() != 0 && !operations.peekLast().equals("(")
                         && operatorsMap.get(operations.peekLast()) >= operatorsMap.get(inSymbol)) {
                     expPostfix.add(operations.pollLast());
@@ -123,12 +105,10 @@ public class Calc {
                     expPostfix.add(operations.pollLast());
                 }
             }
-            // System.out.println("i: " + i + " expPostfix: " + expPostfix);
         }
         while (operations.size() != 0) {
             expPostfix.add(operations.pollLast());
         }
-        // System.out.println(operations);
         return expPostfix;
     }
 
@@ -143,14 +123,42 @@ public class Calc {
                 operands.addLast(Math.PI);
             }
             if (operatorsMap.containsKey(item)) {
-                double a = operands.pollLast();
                 switch (item) {
                     case "+":
-                        result = a + operands.pollLast();
+                        result = operands.pollLast() + operands.pollLast();
                         operands.addLast(result);
                         break;
                     case "-":
-                        result = -a + operands.pollLast();
+                        result = -operands.pollLast() + operands.pollLast();
+                        operands.addLast(result);
+                        break;
+                    case "*":
+                        result = operands.pollLast() * operands.pollLast();
+                        operands.addLast(result);
+                        break;
+                    case "/":
+                        result = 1 / operands.pollLast() * operands.pollLast();
+                        operands.addLast(result);
+                        break;
+                    case "^":
+                        result = operands.pollLast();
+                        result = Math.pow(operands.pollLast(), result);
+                        operands.addLast(result);
+                        break;
+                    case "Sin":
+                        result = Math.sin(operands.pollLast());
+                        operands.addLast(result);
+                        break;
+                    case "Cos":
+                        result = Math.cos(operands.pollLast());
+                        operands.addLast(result);
+                        break;
+                    case "Tg":
+                        result = Math.tan(operands.pollLast());
+                        operands.addLast(result);
+                        break;
+                    case "Ctg":
+                        result = 1 / Math.tan(operands.pollLast());
                         operands.addLast(result);
                         break;
                     default:
@@ -163,16 +171,12 @@ public class Calc {
     }
 
     public static void main(String[] args) {
-        // String exp = "(2^3 * (10 / (5 - 3)))^(Sin(Pi))";
-        String exp = "2 + (3 - 4)";
+        String exp = "(2^3 * (10 / (5 - 3)))^(Sin(Pi))";
+        // String exp = "Cos(Pi)";
         System.out.println(exp);
         Map<String, Integer> operatorsMap = operators();
         ArrayList<String> expPostFix = new ArrayList<>(infixToPostfix(exp, operatorsMap));
         printArrayList(expPostFix);
-        System.out.println("Result = " + calculation(expPostFix, operatorsMap));
-        // System.out.println();
-        // ArrayList<String> operationsList = new ArrayList<>(Arrays.asList("Sin, Cos,
-        // Tan, Cotan, ^, *, /, +, -".split(", ")));
-        // System.out.println(operationsList);
+        System.out.printf("Result = %.3f\n", calculation(expPostFix, operatorsMap));
     }
 }
