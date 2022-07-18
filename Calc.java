@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class Calc {
     static boolean isNumber(String item) {
@@ -170,13 +171,30 @@ public class Calc {
         return result;
     }
 
+    static String inputExp() {
+        System.out.println("Инженерный калькулятор");
+        System.out.println("Операции: +, -, *, /, ^, (, )");
+        System.out.println("Функции: Sin(), Cos(), Tg(), Ctg()");
+        System.out.println("Число Pi: Pi");
+        Scanner readConsole = new Scanner(System.in);
+        System.out.println("Введите арифметическое выражение:");
+        String result = readConsole.nextLine();
+        readConsole.close();
+        return result;
+    }
+
     public static void main(String[] args) {
-        String exp = "(2^3 * (10 / (5 - 3)))^(Sin(Pi))";
+        // String exp = "(2^3 * (10 / (5 - 3)))^(Sin(Pi))";
         // String exp = "Cos(Pi)";
-        System.out.println(exp);
-        Map<String, Integer> operatorsMap = operators();
-        ArrayList<String> expPostFix = new ArrayList<>(infixToPostfix(exp, operatorsMap));
-        printArrayList(expPostFix);
-        System.out.printf("Result = %.3f\n", calculation(expPostFix, operatorsMap));
+        String exp = inputExp();
+        if (rigthPars(exp)) {
+            Map<String, Integer> operatorsMap = operators();
+            ArrayList<String> expPostFix = new ArrayList<>(infixToPostfix(exp, operatorsMap));
+            System.out.println("Выражение в постфиксной нотации:");
+            printArrayList(expPostFix);
+            System.out.printf("Результат: %.3f\n", calculation(expPostFix, operatorsMap));
+        } else {
+            System.out.println("Выражение введено неверно. Пропущена скобка.");
+        }
     }
 }
