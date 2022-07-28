@@ -32,15 +32,28 @@ public class Wave {
     static void seekNeighbours(ArrayList<Point> field, Point thisPoint) {// поиск соседних ячеек
         if (thisPoint.y - 1 >= 0) { // соседняя ячейка слева
             thisPoint.addNeighbour(field.indexOf(thisPoint) - 1);
-        }
-        if (thisPoint.y + 1 < fieldWidth) { // соседняя ячейка справа
-            thisPoint.addNeighbour(field.indexOf(thisPoint) + 1);
+            // if (thisPoint.x - 1 >= 0) {
+            //     thisPoint.addNeighbour(field.indexOf(thisPoint) - fieldWidth - 1); // ячейка слева сверху
+            // }
         }
         if (thisPoint.x - 1 >= 0) { // соседняя ячейка сверху
             thisPoint.addNeighbour(field.indexOf(thisPoint) - fieldWidth);
+            // if (thisPoint.y + 1 < fieldWidth) {
+            //     thisPoint.addNeighbour(field.indexOf(thisPoint) - fieldWidth + 1); // ячейка справа сверху
+            // }
         }
+        if (thisPoint.y + 1 < fieldWidth) { // соседняя ячейка справа
+            thisPoint.addNeighbour(field.indexOf(thisPoint) + 1);
+            // if (thisPoint.x + 1 < fieldHeight) {
+            //     thisPoint.addNeighbour(field.indexOf(thisPoint) + fieldWidth + 1); // ячейка справа снизу    
+            // }
+        }
+        
         if (thisPoint.x + 1 < fieldHeight) { // соседняя ячейка снизу
             thisPoint.addNeighbour(field.indexOf(thisPoint) + fieldWidth);
+            // if (thisPoint.y - 1 >= 0) {
+            //     thisPoint.addNeighbour(field.indexOf(thisPoint) + fieldWidth + 1); // ячейка слева снизу
+            // }
         }
     }
 
@@ -167,7 +180,7 @@ public class Wave {
         }
     }
 
-    public static int fieldHeight = 7; // высота поля
+    public static int fieldHeight = 10; // высота поля
     public static int fieldWidth = 10; // ширина поля
 
     public static void main(String[] args) {
