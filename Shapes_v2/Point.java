@@ -29,4 +29,10 @@ public class Point {
     public String toString() {
         return String.format("(%d, %d)", this.getX(), this.getY());
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        Point p = (Point) obj;
+        return this.x == p.getX() && this.y == p.getY();
+    }
 }

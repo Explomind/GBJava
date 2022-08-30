@@ -1,6 +1,8 @@
 package Shapes_v2;
 
-public class Circle implements Shape {
+import java.util.Iterator;
+
+public class Circle implements Shape, Iterator<String> {
 
     private Point center;
     private double radius;
@@ -37,6 +39,14 @@ public class Circle implements Shape {
         this(new Point(), 1, Color.Black);
     }
 
+    public Point getCenter() {
+        return center;
+    }
+
+    public double getRadius() {
+        return radius;
+    }
+
     public Color getColor() {
         return this.color;
     }
@@ -50,5 +60,35 @@ public class Circle implements Shape {
     @Override
     public double area() {
         return Math.PI * Math.pow(this.radius, 2);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Circle c = (Circle) obj;
+        return this.radius == c.getRadius() && this.color == c.getColor();
+    }
+
+    @Override
+    public String name() {
+        return "Circle";
+    }
+
+    int index;
+
+    @Override
+    public boolean hasNext() {
+        return index++ < 3;
+    }
+
+    @Override
+    public String next() {
+        switch (index) {
+            case 1:
+                return String.format("Center: %s", center);
+            case 2:
+                return String.format("Radius: %s", radius);
+            default:
+                return String.format("Color: %s", color);
+        }
     }
 }

@@ -1,8 +1,9 @@
 package Shapes_v2;
 
+import java.util.Iterator;
 import java.util.List;
 
-public class Polygon implements Shape {
+public class Polygon implements Shape, Iterator<String> {
     private List<Point> nodes;
     private Type type;
     private Color color;
@@ -57,6 +58,18 @@ public class Polygon implements Shape {
         this.type = Type.Square;
     }
 
+    public List<Point> getNodes() {
+        return nodes;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
     @Override
     public String toString() {
         return String.format("%s, color: %s, area: %.2f", this.type, this.color, this.area());
@@ -75,6 +88,48 @@ public class Polygon implements Shape {
                 return AB * BC;
             default:
                 return -1;
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Polygon p = (Polygon) obj;
+        if (this.type != p.getType()) {
+            return false;
+        }
+        for (int i = 0; i < this.nodes.size(); i++) {
+            if (!this.nodes.get(i).equals(p.nodes.get(i))) {
+                return false;
+            }
+        }
+        if (this.color == p.getColor()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public String name() {
+        return this.getType().toString();
+    }
+
+    int index;
+
+    @Override
+    public boolean hasNext() {
+        return index++ < 3;
+    }
+
+    @Override
+    public String next() {
+        switch (index) {
+            case 1:
+                return String.format("Nodes: %s", nodes);
+            case 2:
+                return String.format("Type: %s", type);
+            default:
+                return String.format("Color: %s", color);
         }
     }
 }

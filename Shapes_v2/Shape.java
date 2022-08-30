@@ -2,9 +2,11 @@ package Shapes_v2;
 
 import java.util.List;
 
-public interface Shape {
+public interface Shape extends Comparable<Shape> {
 
     public abstract double area();
+
+    public abstract String name();
 
     public static double distance(Point firstPoint, Point secondPoint) {
         return Math.sqrt(Math.pow(firstPoint.getX() - secondPoint.getX(), 2)
@@ -21,5 +23,15 @@ public interface Shape {
             }
         }
         return res;
+    }
+
+    @Override
+    default int compareTo(Shape s) {
+        if (this.area() > s.area())
+            return 1;
+        else if (this.area() < s.area())
+            return -1;
+        else
+            return 0;
     }
 }
